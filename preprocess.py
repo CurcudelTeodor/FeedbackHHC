@@ -1,16 +1,33 @@
+import datetime
+import functools
+from collections import defaultdict
+
 import pandas as pd
 
 
+index_dict = defaultdict(int)
+
+
+def item_to_label(column_name):
+    # assigns a string to an index
+    @functools.cache
+    def inner(state):
+        index_dict[column_name] += 1
+        return index_dict[column_name]
+
+    return inner
+
+
+def date_to_timestmap(date):
+    if date == '-':
+        return date
+
+    # artificially offset the values with about 100 years
+    return (datetime.datetime.strptime(date, '%m/%d/%Y') + datetime.timedelta(days=10 * 365)).timestamp()
+
+
 def compute_medians_on_columns(column: pd.Series):
-    try:
-        column.astype(float)
-    except:
-        print(column)
-
-    return 0
-    # if data.dtypes[column] i
-
-    # return column.median()
+    return column.apply(pd.to_numeric, errors='coerce')
 
 
 def handle_missing_values(data: pd.DataFrame):
@@ -23,31 +40,21 @@ def handle_missing_values(data: pd.DataFrame):
     data = data.drop(columns=columns_to_drop)
 
     # case 3: remove lines which contain: not available
-
     data = data[~data.isin(['Not Available']).any(axis=1)]
 
-    data = data.apply(pd.to_numeric, errors='coerce')
+    # data = data.replace('Yes', 1).replace('No', 0)
+
+    data['State'] = data['State'].map(item_to_label('1'))
+    data['Provider Name'] = data['Provider Name'].map(item_to_label('2'))
+    data['Address'] = data['Address'].map(item_to_label('3'))  # TODO: este relevanta adresa, avand in vedere ca nu o putem cuantifica?
+    data['City/Town'] = data['City/Town'].map(item_to_label('4'))
+    data['Type of Ownership'] = data['Type of Ownership'].map(item_to_label('5'))
+
+    # converting date to a timestamp (maybe?)
+    data['Certification Date'] = data['Certification Date'].map(date_to_timestmap)
 
     for col in data.columns:
-        data[col] = data[col].replace('-', compute_medians_on_columns(data[col][data[col] != '-']))
-
-    # case 4: data contains leftover symbol on column Type of Ownership
-    # data = data[data['Type of Ownership'] != '-']
-    #
-    # # case 5: further remove - symbol
-    # data = data[data['How often patients got better at bathing'] != '-']
-    # data = data[data['DTC Numerator'] != '-']
-    # data["Telephone Number"] = data["Telephone Number"].apply(lambda x: "0000000000" if x == "-" else x)
-    #
-    # # remove remaining -
-    # data.replace("-", pd.NA, inplace=True)
-    # data.dropna(how="any", axis=0, inplace=True)
-    #
-    # data['Certification Date'] = pd.to_datetime(data['Certification Date'], errors='coerce')
-    # # format the date column in the desired format
-    # data['Certification Date'] = data['Certification Date'].dt.strftime('%d-%m-%y')
-    #
-    # data.reset_index(drop=True, inplace=True)
+        data[col] = data[col].replace('-', 0)  # TODO: use median
 
     return data
 

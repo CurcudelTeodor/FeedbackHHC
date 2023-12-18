@@ -18,12 +18,12 @@ def main():
 
     clean_data_frame.to_csv(r'data\transformed.csv', index=False)
 
-    # transformed_data_frame = transform_data_types(clean_data_frame)
+    transformed_data_frame = transform_data_types(clean_data_frame)
     # print("\n\n\n\n")
     # print(transformed_data_frame.info())
 
     # save the transformed DataFrame to a new CSV file
-    # transformed_data_frame.to_csv("clean_data.csv", index=False)
+    transformed_data_frame.to_csv(r"data\clean_data.csv", index=False)
 
 
 if __name__ == "__main__":
