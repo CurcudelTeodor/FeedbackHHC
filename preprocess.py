@@ -3,7 +3,11 @@ import functools
 from collections import defaultdict
 
 import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from sklearn.decomposition import PCA
 
+from utils.config import *
 
 index_dict = defaultdict(int)
 
@@ -18,7 +22,7 @@ def item_to_label(column_name):
     return inner
 
 
-def date_to_timestmap(date):
+def date_to_timestamp(date: str):
     if date == '-':
         return date
 
@@ -26,8 +30,16 @@ def date_to_timestmap(date):
     return (datetime.datetime.strptime(date, '%m/%d/%Y') + datetime.timedelta(days=10 * 365)).timestamp()
 
 
-def compute_medians_on_columns(column: pd.Series):
-    return column.apply(pd.to_numeric, errors='coerce')
+def fill_column(data: pd.DataFrame, column_name: str):
+    imposter = np.nan
+    column = data[column_name]
+    filtered_column = column[column != imposter]
+
+    if column_name in QUANTIFIABLE_COLUMNS:
+        return column.replace(imposter, filtered_column.mean())
+    else:
+        # get the most frequent value
+        return column.replace(imposter, filtered_column.mode().iloc[0])
 
 
 def handle_missing_values(data: pd.DataFrame):
@@ -51,10 +63,7 @@ def handle_missing_values(data: pd.DataFrame):
     data['Type of Ownership'] = data['Type of Ownership'].map(item_to_label('5'))
 
     # converting date to a timestamp (maybe?)
-    data['Certification Date'] = data['Certification Date'].map(date_to_timestmap)
-
-    for col in data.columns:
-        data[col] = data[col].replace('-', 0)  # TODO: use median
+    data['Certification Date'] = data['Certification Date'].map(date_to_timestamp)
 
     return data
 
@@ -90,7 +99,7 @@ def transform_data_types(data):
     categorical_columns = ['DTC Performance Categorization', 'PPR Performance Categorization',
                            'PPH Performance Categorization']
     for col in categorical_columns:
-        data[col] = data[col].map(categorization_mapping).astype('Int8')  # Downcast to int8
+        data[col] = data[col].map(categorization_mapping)  # Downcast to int8
 
     categorization_mapping_yes_no = {
         'No': 0,
@@ -102,6 +111,34 @@ def transform_data_types(data):
                                   'Offers Medical Social Services',
                                   'Offers Home Health Aide Services']
     for col in categorical_columns_yes_no:
-        data[col] = data[col].map(categorization_mapping_yes_no).astype('Int8')  # Downcast to int8
+        data[col] = data[col].map(categorization_mapping_yes_no)  # Downcast to int8
+
+    data = data.apply(pd.to_numeric, errors='coerce')
+
+    # replace toate NA cu o alta valoare, in functie de tipul de coloana
+    for col in data.columns:
+        data[col] = fill_column(data, col)
+
+    return data
+
+
+def pca_transform(data: pd.DataFrame, target_variance=0.95):
+    print(f'Initial data shape: {format(data.shape)}')
+
+    # normalize columns
+    for col in data.columns:
+        data[col] = (data[col] - data[col].min()) / (data[col].max() - data[col].min())
+
+    pca = PCA()
+    pca.fit(data)
+
+    variance = np.cumsum(pca.explained_variance_ratio_)
+    principal_components_count = np.where(variance >= target_variance)[0][0] + 1
+
+    # apply pca to the data
+    pca = PCA(n_components=principal_components_count)
+    data = pd.DataFrame(pca.fit_transform(data))
+
+    print(f'Initial data shape: {format(data.shape)}')
 
     return data
