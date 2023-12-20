@@ -1,12 +1,9 @@
 import datetime
 import functools
 from collections import defaultdict
-
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
-
 from utils.config import *
 
 index_dict = defaultdict(int)
@@ -50,15 +47,16 @@ def handle_missing_values(data: pd.DataFrame):
     # case 2: remove columns starting with 'Footnote' -> no valuable information
     columns_to_drop = [col for col in data.columns if col.startswith('Footnote')]
     data = data.drop(columns=columns_to_drop)
-
     # case 3: remove lines which contain: not available
     data = data[~data.isin(['Not Available']).any(axis=1)]
+
+    # case 4: delete irrelevant columns
+    data = data.drop(columns=['Address'])
 
     # data = data.replace('Yes', 1).replace('No', 0)
 
     data['State'] = data['State'].map(item_to_label('1'))
     data['Provider Name'] = data['Provider Name'].map(item_to_label('2'))
-    data['Address'] = data['Address'].map(item_to_label('3'))  # TODO: este relevanta adresa, avand in vedere ca nu o putem cuantifica?
     data['City/Town'] = data['City/Town'].map(item_to_label('4'))
     data['Type of Ownership'] = data['Type of Ownership'].map(item_to_label('5'))
 
@@ -122,7 +120,7 @@ def transform_data_types(data):
     return data
 
 
-def pca_transform(data: pd.DataFrame, target_variance=0.95):
+def pca_transform(data: pd.DataFrame, target_variance=0.90):
     print(f'Initial data shape: {format(data.shape)}')
 
     # normalize columns
@@ -139,6 +137,6 @@ def pca_transform(data: pd.DataFrame, target_variance=0.95):
     pca = PCA(n_components=principal_components_count)
     data = pd.DataFrame(pca.fit_transform(data))
 
-    print(f'Initial data shape: {format(data.shape)}')
+    print(f'PCA data shape: {format(data.shape)}')
 
     return data
