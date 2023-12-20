@@ -1,5 +1,6 @@
 from preprocess import handle_missing_values, transform_data_types, pca_transform
 import pandas as pd
+from exploitation_analysis import histogram
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
 
     transformed_data_frame = transform_data_types(clean_data_frame)
     transformed_data_frame.to_csv(r"data\clean_data.csv", index=False)
-
+    histogram(transformed_data_frame)
     pca_data_frame = pca_transform(transformed_data_frame)
     pca_data_frame.to_csv(r'data\pca.csv', index=False)
 
