@@ -1,50 +1,67 @@
+import datetime
+import functools
+from collections import defaultdict
 import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from utils.config import *
+
+index_dict = defaultdict(int)
 
 
-def read_csv(file_path):
-    return pd.read_csv(file_path)
+def item_to_label(column_name):
+    # assigns a string to an index
+    @functools.cache
+    def inner(state):
+        index_dict[column_name] += 1
+        return index_dict[column_name]
+
+    return inner
 
 
-def handle_missing_values(data):
-    #print(data.info())
+def date_to_timestamp(date: str):
+    if date == '-':
+        return date
+
+    # artificially offset the values with about 100 years
+    return (datetime.datetime.strptime(date, '%m/%d/%Y') + datetime.timedelta(days=10 * 365)).timestamp()
+
+
+def fill_column(data: pd.DataFrame, column_name: str):
+    imposter = np.nan
+    column = data[column_name]
+    filtered_column = column[column != imposter]
+
+    if column_name in QUANTIFIABLE_COLUMNS:
+        return column.replace(imposter, filtered_column.mean())
+    else:
+        # get the most frequent value
+        return column.replace(imposter, filtered_column.mode().iloc[0])
+
+
+def handle_missing_values(data: pd.DataFrame):
     # case 1: remove entries for which a column doesn't have 11739 (total_entries) non-null entries
     #  2  Provider Name    11738 non-null  object  -> an entry has Provider Name = null -> remove the entry
-    total_entries = len(data)
-    non_null_counts = data.count()
-
-    columns_with_missing_values = non_null_counts[non_null_counts < total_entries].index.tolist()
-    data = data.dropna(subset=columns_with_missing_values)
+    data = data.dropna()
 
     # case 2: remove columns starting with 'Footnote' -> no valuable information
     columns_to_drop = [col for col in data.columns if col.startswith('Footnote')]
     data = data.drop(columns=columns_to_drop)
+    # case 3: remove lines which contain: not available
+    data = data[~data.isin(['Not Available']).any(axis=1)]
 
-    # case 3: remove lines which contain: this, the, not
-    keywords = ["this", "the", "not available"]
-    # boolean mask for lines containing keywords
-    mask = data.apply(lambda row: all(keyword in str(row).lower() for keyword in keywords), axis=1)
+    # case 4: delete irrelevant columns
+    data = data.drop(columns=['Address'])
 
-    # invert the mask to keep lines that do not contain keywords
-    data = data[~mask]
+    # data = data.replace('Yes', 1).replace('No', 0)
 
-    # case 4: data contains leftover symbol on column Type of Ownership
-    data = data[data['Type of Ownership'] != '-']
+    data['State'] = data['State'].map(item_to_label('1'))
+    data['Provider Name'] = data['Provider Name'].map(item_to_label('2'))
+    data['City/Town'] = data['City/Town'].map(item_to_label('4'))
+    data['Type of Ownership'] = data['Type of Ownership'].map(item_to_label('5'))
 
-    # case 5: further remove - symbol
-    data = data[data['How often patients got better at bathing'] != '-']
-    data = data[data['DTC Numerator'] != '-']
-    data["Telephone Number"] = data["Telephone Number"].apply(lambda x: "0000000000" if x == "-" else x)
-
-    # remove remaining -
-    data.replace("-", pd.NA, inplace=True)
-    data.dropna(how="any", axis=0, inplace=True)
-
-
-    data['Certification Date'] = pd.to_datetime(data['Certification Date'], errors='coerce')
-    # format the date column in the desired format
-    data['Certification Date'] = data['Certification Date'].dt.strftime('%d-%m-%y')
-
-    data.reset_index(drop=True, inplace=True)
+    # converting date to a timestamp (maybe?)
+    data['Certification Date'] = data['Certification Date'].map(date_to_timestamp)
 
     return data
 
@@ -70,7 +87,6 @@ def transform_data_types(data):
         else:
             data[col] = data[col].astype(str)
 
-
     # encode categorical columns with a mapping dictionary
     categorization_mapping = {
         'Worse Than National Rate': 0,
@@ -79,11 +95,9 @@ def transform_data_types(data):
     }
 
     categorical_columns = ['DTC Performance Categorization', 'PPR Performance Categorization',
-                               'PPH Performance Categorization']
+                           'PPH Performance Categorization']
     for col in categorical_columns:
-        data[col] = data[col].map(categorization_mapping).astype('Int8')  # Downcast to int8
-
-
+        data[col] = data[col].map(categorization_mapping)  # Downcast to int8
 
     categorization_mapping_yes_no = {
         'No': 0,
@@ -91,11 +105,38 @@ def transform_data_types(data):
     }
 
     categorical_columns_yes_no = ['Offers Nursing Care Services', 'Offers Physical Therapy Services',
-                           'Offers Occupational Therapy Services', 'Offers Speech Pathology Services', 'Offers Medical Social Services',
-                           'Offers Home Health Aide Services']
+                                  'Offers Occupational Therapy Services', 'Offers Speech Pathology Services',
+                                  'Offers Medical Social Services',
+                                  'Offers Home Health Aide Services']
     for col in categorical_columns_yes_no:
-        data[col] = data[col].map(categorization_mapping_yes_no).astype('Int8')  # Downcast to int8
+        data[col] = data[col].map(categorization_mapping_yes_no)  # Downcast to int8
+
+    data = data.apply(pd.to_numeric, errors='coerce')
+
+    # replace toate NA cu o alta valoare, in functie de tipul de coloana
+    for col in data.columns:
+        data[col] = fill_column(data, col)
 
     return data
 
 
+def pca_transform(data: pd.DataFrame, target_variance=0.90):
+    print(f'Initial data shape: {format(data.shape)}')
+
+    # normalize columns
+    for col in data.columns:
+        data[col] = (data[col] - data[col].min()) / (data[col].max() - data[col].min())
+
+    pca = PCA()
+    pca.fit(data)
+
+    variance = np.cumsum(pca.explained_variance_ratio_)
+    principal_components_count = np.where(variance >= target_variance)[0][0] + 1
+
+    # apply pca to the data
+    pca = PCA(n_components=principal_components_count)
+    data = pd.DataFrame(pca.fit_transform(data))
+
+    print(f'PCA data shape: {format(data.shape)}')
+
+    return data
