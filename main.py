@@ -68,6 +68,10 @@ def main():
     transformed_data_frame = transform_data_types(clean_data_frame)
 
     label = transformed_data_frame['Quality of patient care star rating']
+
+    # remove target
+    transformed_data_frame = transformed_data_frame.drop(columns='Quality of patient care star rating')
+
     transformed_data_frame.to_csv(r"data\clean_data.csv", index=False)
     # histogram(transformed_data_frame)
     pca_data_frame = pca_transform(transformed_data_frame)
