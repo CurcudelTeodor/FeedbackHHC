@@ -27,7 +27,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # create a Support Vector Classifier
-svc = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=42)
+svc = SVC(kernel='rbf', C=2.0, gamma='scale', random_state=42)
 
 # fit the model
 svc.fit(X_train_scaled, y_train)
@@ -39,7 +39,7 @@ y_pred_svc = svc.predict(X_test_scaled)
 print(f'Train Accuracy - : {svc.score(X_train_scaled, y_train):.5f}')
 
 accuracy_svc = accuracy_score(y_test, y_pred_svc)
-print(f'Accuracy (SVC): {accuracy_svc:.2f}')
+print(f'Accuracy (SVC): {accuracy_svc:.5f}')
 
 # Display classification report
 print('Classification Report (SVC):')
