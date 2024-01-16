@@ -33,7 +33,7 @@ def fill_column(data: pd.DataFrame, column_name: str):
     filtered_column = column[column != imposter]
 
     if column_name in QUANTIFIABLE_COLUMNS:
-        return column.replace(imposter, filtered_column.mean())
+        return column.replace(imposter, filtered_column.median())
     else:
         # get the most frequent value
         return column.replace(imposter, filtered_column.mode().iloc[0])

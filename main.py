@@ -26,6 +26,10 @@ def check_cpu_gpu():
 
 def print_nn_statistics(output, target):
     acc = accuracy(output, target, target.shape[0])
+
+    for o, t in zip(output, target):
+        print(f"Output: {o.item()} Target: {t}")
+
     print(f"Accuracy is: {acc}")
 
     for i in range(5):
@@ -41,7 +45,7 @@ def print_nn_statistics(output, target):
 def apply_nn(data, label):
     data = torch.tensor(data.values, dtype=torch.float32)
     label = torch.tensor(label.values, dtype=torch.float32)
-    x_train, x_test, y_train, y_test = train_test_split(data, label, random_state=RANDOM_STATE, test_size=0.2,
+    x_train, x_test, y_train, y_test = train_test_split(data, label, random_state=RANDOM_STATE, test_size=0.25,
                                                         shuffle=True)
 
     device = check_cpu_gpu()
@@ -53,17 +57,17 @@ def apply_nn(data, label):
     print("Test data")
     print_nn_statistics(net(x_test), y_test)
 
-    # pickle.dumps(open("./net", "wb"))
+    pickle.dump(net, open("./net.pkl", "wb"))
 
 
 def main():
-    file_path = r"data\HH_Provider_Oct2023.csv"
+    file_path = r"data/HH_Provider_Oct2023.csv"
     data_frame = pd.read_csv(file_path)
     clean_data_frame = handle_missing_values(data_frame)
 
     clean_data_frame = clean_data_frame.reset_index(drop=True)
 
-    clean_data_frame.to_csv(r'data\transformed.csv', index=False)
+    clean_data_frame.to_csv(r'data/transformed.csv', index=False)
 
     transformed_data_frame = transform_data_types(clean_data_frame)
 
@@ -72,10 +76,10 @@ def main():
     # remove target
     transformed_data_frame = transformed_data_frame.drop(columns='Quality of patient care star rating')
 
-    transformed_data_frame.to_csv(r"data\clean_data.csv", index=False)
+    transformed_data_frame.to_csv(r"data/clean_data.csv", index=False)
     # histogram(transformed_data_frame)
     pca_data_frame = pca_transform(transformed_data_frame)
-    pca_data_frame.to_csv(r'data\pca.csv', index=False)
+    pca_data_frame.to_csv(r'data/pca.csv', index=False)
 
     # print(label.describe())
     apply_nn(pca_data_frame, label)

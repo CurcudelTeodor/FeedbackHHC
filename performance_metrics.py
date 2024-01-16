@@ -1,10 +1,11 @@
-from config import DELTA
+def round_5(number):
+    return 0.5 * round(number / 0.5)
 
 
 def accuracy(output, target, size):
     correctly_classified = 0
     for o, t in zip(output, target):
-        if abs(o - t) < DELTA:
+        if round_5(o.item()) == t:
             correctly_classified += 1
     return correctly_classified / size
 
