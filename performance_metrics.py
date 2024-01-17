@@ -1,30 +1,27 @@
-def round_5(number):
-    return 0.5 * round(number / 0.5)
-
-
 def accuracy(output, target, size):
     correctly_classified = 0
+    print(target)
+    print(output)
     for o, t in zip(output, target):
-        if round_5(o.item()) == t:
+        if o.item() == t:
             correctly_classified += 1
     return correctly_classified / size
 
 
-def precision(output, target, limit1, limit2):
+def precision(output, target, limit):
     """
     Computes precision for values in a specific interval
     :param output: Output made by the model
     :param target: The targeted labels
-    :param limit1: inferior limit of the interval
-    :param limit2: superior limit of the interval
+    :param limit1: Index
     :return:
     """
     tp = 0
     fp = 0
 
     for o, t in zip(output, target):
-        if limit1 < o < limit2:
-            if limit1 < t < limit2:
+        if limit == o:
+            if limit == t:
                 tp += 1
             else:
                 fp += 1
@@ -34,13 +31,13 @@ def precision(output, target, limit1, limit2):
     return tp / (tp + fp)
 
 
-def recall(output, target, limit1, limit2):
+def recall(output, target, limit):
     tp = 0
     fn = 0
 
     for o, t in zip(output, target):
-        if limit1 < t < limit2:
-            if limit1 < o < limit2:
+        if limit == t:
+            if limit == o:
                 tp += 1
             else:
                 fn += 1
@@ -50,9 +47,9 @@ def recall(output, target, limit1, limit2):
     return tp / (tp + fn)
 
 
-def f1_score(output, target, limit1, limit2):
-    pr = precision(output, target, limit1, limit2)
-    re = recall(output, target, limit1, limit2)
+def f1_score(output, target, limit):
+    pr = precision(output, target, limit)
+    re = recall(output, target, limit)
 
     if pr + re == 0:
         return 0
