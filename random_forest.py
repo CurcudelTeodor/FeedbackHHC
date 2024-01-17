@@ -29,7 +29,7 @@ def plot_roc_curve_multiclass(y_true, y_prob, classes, title='Receiver Operating
     plt.show()
 
 
-def train_random_forest(X_train, y_train, X_test, y_test, n_estimators=70, random_state=42, bootstrap=True):
+def train_random_forest(X_train, y_train, X_test, y_test):
     # standardize features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
