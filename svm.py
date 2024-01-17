@@ -3,6 +3,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import StandardScaler
 
+from utils.roc_curve import plot_roc_curve_multiclass
+
 
 def train_svm(X_train, y_train, X_test, y_test):
     # standardize features
@@ -35,6 +37,10 @@ def train_svm(X_train, y_train, X_test, y_test):
 def main():
     X_train, X_test, y_train, y_test = setup.get_train_and_test_data(test_size=0.2, random_state=101)
     svc = train_svm(X_train, y_train, X_test, y_test)
+
+    y_prob_rf = svc.decision_function(X_test)
+
+    plot_roc_curve_multiclass(y_test, y_prob_rf, classes=svc.classes_, title='ROC Curves for SVM Classifier')
 
 
 if __name__ == "__main__":

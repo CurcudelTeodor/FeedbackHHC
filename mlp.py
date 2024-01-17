@@ -3,6 +3,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import StandardScaler
 
+from utils.roc_curve import plot_roc_curve_multiclass
+
 
 def train_mlp(X_train, y_train, X_test, y_test):
     # standardize features
@@ -36,6 +38,10 @@ def train_mlp(X_train, y_train, X_test, y_test):
 def main():
     X_train, X_test, y_train, y_test = setup.get_train_and_test_data(test_size=0.2, random_state=101)
     mlp_classifier = train_mlp(X_train, y_train, X_test, y_test)
+
+    y_prob_rf = mlp_classifier.predict_proba(X_test)
+
+    plot_roc_curve_multiclass(y_test, y_prob_rf, classes=mlp_classifier.classes_, title='ROC Curves for MLP Classifier')
 
 
 if __name__ == "__main__":
