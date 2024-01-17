@@ -13,7 +13,6 @@ def main():
     clean_data_frame.to_csv(r'data/transformed.csv', index=False)
 
     transformed_data_frame = transform_data_types(clean_data_frame)
-
     label = transformed_data_frame[['Quality of patient care star rating']]
 
     transformed_data_frame.to_csv(r"data/clean_data.csv", index=False)

@@ -1,7 +1,5 @@
 def accuracy(output, target, size):
     correctly_classified = 0
-    print(target)
-    print(output)
     for o, t in zip(output, target):
         if o.item() == t:
             correctly_classified += 1
