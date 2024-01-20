@@ -46,6 +46,8 @@ def main():
     # augment classes
     augmented_data = augment_class(transformed_data_frame, target_class=1, num_samples=500)
     augmented_data = augment_class(augmented_data, target_class=5, num_samples=500)
+    augmented_data = augment_class(augmented_data, target_class=4, num_samples=100)
+
     #augmented_data = undersample_class(augmented_data, target_class=3,num_samples=400)
 
     augmented_data.to_csv(r"data/clean_data.csv", index=False)
