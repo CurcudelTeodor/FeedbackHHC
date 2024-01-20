@@ -68,3 +68,58 @@ input{
   display: flex;
 }
 
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 1200px; 
+  margin: auto; 
+}
+
+.top-information {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: flex-start; 
+  margin-bottom: 20px;
+}
+
+.agency-name {
+  flex-grow: 1; 
+  margin-right: 20px; 
+}
+
+.agency-name h2 {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0;
+  margin-bottom: 5px; 
+}
+
+.agency-name h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.information {
+  font-size: 18px;
+  text-align: right; 
+}
+
+.information p {
+  margin: 4px 0;
+}
+
+.information p.bold {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center; 
+  margin-top: 20px; 
+}
+

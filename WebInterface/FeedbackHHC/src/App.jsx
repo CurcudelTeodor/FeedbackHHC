@@ -1,7 +1,7 @@
-import Chart from "./Chart";
+import Chart from "./components/Chart";
 import "./App.css";
 import { useState } from "react";
-import AgencySearch from "./AgencySearch";
+import AgencySearch from "./components/AgencySearch";
 function App() {
   const [selectedButton, setSelectedButton] = useState("1");
   return (
