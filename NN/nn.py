@@ -24,13 +24,16 @@ class NN(nn.Module):
     def __init__(self, input_layer_size=15):
         super().__init__()
         self.input_layer_size = input_layer_size
-        self.hidden_layer_size = 64
+        self.hidden_layer_size_1 = 128
+        self.hidden_layer_size_2 = 64
         self.output_layer_size = 5
 
-        self.input_to_hidden = nn.Linear(self.input_layer_size, self.hidden_layer_size)
+        self.input_to_hidden = nn.Linear(self.input_layer_size, self.hidden_layer_size_1)
         torch.nn.init.kaiming_uniform_(self.input_to_hidden.weight)
 
-        self.hidden_to_output = nn.Linear(self.hidden_layer_size, self.output_layer_size)
+        self.inter_layer = nn.Linear(self.hidden_layer_size_1, self.hidden_layer_size_2)
+
+        self.hidden_to_output = nn.Linear(self.hidden_layer_size_2, self.output_layer_size)
         torch.nn.init.xavier_uniform_(self.hidden_to_output.weight)
 
         self.relu = nn.ReLU()
@@ -60,6 +63,7 @@ class NN(nn.Module):
 
     def forward(self, data):
         res = self.relu(self.input_to_hidden(data))
+        res = self.relu(self.inter_layer(res))
         res = self.hidden_to_output(res)
 
         return res
