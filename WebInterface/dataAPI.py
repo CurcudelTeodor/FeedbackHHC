@@ -36,7 +36,7 @@ def calculate_histogram_data(df, columns_to_analyze):
 
 @app.route('/')
 def get_columns():
-    return jsonify({'partitions': columns_to_analyze}), 200
+    return jsonify({'columns': columns_to_analyze}), 200
 
 
 @app.route('/histograms')
@@ -47,16 +47,31 @@ def histograms():
 
 @app.route('/agencies')
 def agencies():
-    agency_names = data_frame['Provider Name'].fillna("").tolist()
+    agency_names = data_frame['Provider Name'].dropna().unique().tolist()
+
     return jsonify({'agencies': agency_names}), 200
 
 
-@app.route('/agency/<provider_name>')
-def agency(provider_name):
-    agency_data = data_frame[data_frame['Provider Name'] == provider_name]
+from urllib.parse import unquote
 
-    agency_dict = agency_data.to_dict('records')
-    return jsonify(agency_dict[0] if agency_dict else {}), 200
+
+@app.route('/agency/<provider_name>/<zip_code>')
+def agency(provider_name, zip_code):
+    provider_name = unquote(provider_name)
+
+    provider_name = provider_name.strip()
+    zip_code = str(zip_code).strip()
+
+    data_frame['ZIP Code'] = data_frame['ZIP Code'].astype(str)
+
+    filtered_data = data_frame[(data_frame['Provider Name'].str.lower() == provider_name.lower()) &
+                               (data_frame['ZIP Code'] == zip_code)]
+
+    if not filtered_data.empty:
+        agency_dict = filtered_data.to_dict('records')
+        return jsonify(agency_dict), 200
+    else:
+        return jsonify({"error": "No data found for the given provider name and ZIP code"}), 404
 
 
 if __name__ == '__main__':

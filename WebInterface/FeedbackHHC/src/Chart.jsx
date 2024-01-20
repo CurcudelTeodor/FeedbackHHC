@@ -17,8 +17,8 @@ const Chart = () => {
     fetch("http://127.0.0.1:5000")
       .then((res) => res.json())
       .then((d) => {
-        for (let i = 0; i < d.partitions.length; i++) {
-          optionsData.push({ value: d.partitions[i], label: d.partitions[i] });
+        for (let i = 0; i < d.columns.length; i++) {
+          optionsData.push({ value: d.columns[i], label: d.columns[i] });
         }
       });
     setOptionsData(optionsData);

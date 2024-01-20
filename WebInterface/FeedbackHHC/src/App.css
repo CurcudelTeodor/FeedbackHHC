@@ -32,3 +32,39 @@
   align-items: center; 
   justify-content: center; 
 }
+
+.search-container{
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-inner{
+  display: flex;
+  gap:10px;
+}
+.search-btn{
+  width: 250px;
+}
+.dropdown{
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid gray;
+}
+.dropdown:empty{
+  border: none;
+}
+.dropdown-row{
+  cursor: pointer;
+  text-align: start;
+  margin: 2px 0;
+}
+input{
+  width: 220px;
+}
+.search-inner{
+  display: flex;
+}
+
