@@ -1,0 +1,34 @@
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding-bottom: 1rem; 
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start; 
+  height: 100vh;
+  text-align: center; 
+}
+
+.selector {
+  margin-top: 20px; 
+  width: 100%; 
+  max-width: 300px; 
+}
+
+.chart-container {
+  flex-grow: 1; 
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+}
