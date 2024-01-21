@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { FaCheck,FaRegWindowClose  } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import StarRating from "./StarRating";
 const AgencySearch = () => {
@@ -7,6 +8,7 @@ const AgencySearch = () => {
   const [zipCode, setZipCode] = useState("");
   const [agencies, setAgencies] = useState([]);
   const [agencyData, setAgencyData] = useState(null);
+  
 
   const handleNameChange = (event) => {
     setAgencyName(event.target.value);
@@ -76,8 +78,18 @@ const AgencySearch = () => {
       <div className="search-page">
         <div className="search-container">
           <div className="search-inner">
-            <input type="text" value={agencyName} onChange={handleNameChange} />
-            <input type="text" value={zipCode} onChange={handleZipCodeChange} />
+            <input
+              type="text"
+              value={agencyName}
+              onChange={handleNameChange}
+              placeholder="Enter agency name"
+            />
+            <input
+              type="text"
+              value={zipCode}
+              onChange={handleZipCodeChange}
+              placeholder="Enter agency zip code"
+            />
             <button className="search-btn" onClick={() => onSearch(agencyName)}>
               Search
             </button>
@@ -91,7 +103,7 @@ const AgencySearch = () => {
                 return (
                   searchTerm &&
                   agency.startsWith(searchTerm) &&
-                  agency !== searchTerm
+                  (agencyName === "" || agency !== searchTerm)
                 );
               })
               .slice(0, 10)
@@ -107,30 +119,82 @@ const AgencySearch = () => {
           </div>
         </div>
         {agencyData && (
-  <div className="search-results">
-    <div className="top-information">
-      <div className="agency-name">
-        <h2>Home health agency</h2>
-        <h1>{agencyData["Provider Name"]}</h1>
-      </div>
-      <div className="information">
-        <p className="bold">OFFICE LOCATION</p>
-        <p>{agencyData.Address}</p>
-        <p>
-          {agencyData["City/Town"]}, {agencyData.State} {agencyData["ZIP Code"]}
-        </p>
-        <p className="bold">PHONE NUMBER</p>
-        <p>{agencyData["Telephone Number"]}</p>
-      </div>
-    </div>
-    <div className="star-rating">
-      <StarRating
-        rating={agencyData["Quality of patient care star rating"]}
-      />
-    </div>
-  </div>
-)}
-
+          <div className="search-results">
+            <div className="top-information">
+              <div className="agency-name">
+                <h2>Home health agency</h2>
+                <h1>{agencyData["Provider Name"]}</h1>
+              </div>
+              <div className="information">
+                <p className="bold">OFFICE LOCATION</p>
+                <p>{agencyData.Address}</p>
+                <p>
+                  {agencyData["City/Town"]}, {agencyData.State}{" "}
+                  {agencyData["ZIP Code"]}
+                </p>
+                <p className="bold">PHONE NUMBER</p>
+                <p>{agencyData["Telephone Number"]}</p>
+              </div>
+            </div>
+            <div className="star-rating">
+              <p>Quality of patient care star rating</p>
+              <StarRating
+                rating={agencyData["Quality of patient care star rating"]}
+              />
+            </div>
+            <div className="services">
+              <div>
+                <h3>Services Provided</h3>
+              </div>
+              <div>
+                <ul>
+                  <li className="list-item">
+                    {"Offers Home Health Aide Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Home Health Aide Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Home Health Aide Services"]}
+                    </div>
+                  </li>
+                  <li className="list-item">
+                    {"Offers Medical Social Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Medical Social Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Medical Social Services"]}
+                    </div>
+                  </li>
+                  <li className="list-item">
+                    {"Offers Nursing Care Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Nursing Care Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Nursing Care Services"]}
+                    </div>
+                  </li>
+                  <li className="list-item">
+                    {"Offers Occupational Therapy Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Occupational Therapy Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Occupational Therapy Services"]}
+                    </div>
+                  </li>
+                  <li className="list-item">
+                    {"Offers Physical Therapy Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Physical Therapy Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Physical Therapy Services"]}
+                    </div>
+                  </li>
+                  <li className="list-item">
+                    {"Offers Speech Pathology Services"}
+                    <div className="services-item">
+                    {agencyData["Offers Speech Pathology Services"] === "Yes" ? <FaCheck color="green"/>   : <FaRegWindowClose color="red"/>}
+                    {agencyData["Offers Speech Pathology Services"]}
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <ToastContainer
         position="bottom-right"
