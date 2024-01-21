@@ -4,7 +4,7 @@ from collections import defaultdict
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
-from utils.config import *
+from config import *
 
 index_dict = defaultdict(int)
 
