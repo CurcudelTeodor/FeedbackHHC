@@ -1,8 +1,11 @@
+import os
+
 import numpy as np
 import pandas as pd
+import torch
 
 import config
-from NN.nn import test_nn, apply_nn
+from NN.nn import test_nn, apply_nn, NN, print_nn_statistics
 from preprocess import fill_column, pca_transform
 from sklearn.utils import shuffle
 
@@ -44,6 +47,20 @@ def merge_data():
     return merged
 
 
+def test_nn(data, label):
+    if not os.path.isfile(config.NN_SAVE_PATH):
+        print('There is no saved pkl file for the nn')
+        exit(-1)
+
+    data = torch.tensor(data.values, dtype=torch.float32)
+    label = torch.tensor(label.values)
+
+    net: NN = NN.load_from_disk()
+
+    output_test = net(data).detach().apply_(lambda x: 0.5 * round(x / 0.5))
+    print_nn_statistics(output_test, label)
+
+
 if __name__ == "__main__":
     merged = merge_data()
 
@@ -72,4 +89,5 @@ if __name__ == "__main__":
 
     merged = pca_transform(merged)
 
-    apply_nn(merged, label[config.TARGET_COLUMN_NAME])
+    # apply_nn(merged, label[config.TARGET_COLUMN_NAME])
+    test_nn(merged, label[config.TARGET_COLUMN_NAME])

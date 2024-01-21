@@ -70,8 +70,8 @@ class NN(nn.Module):
         return res
 
     @staticmethod
-    def load_from_disk():
-        with open(config.NN_SAVE_PATH, 'rb') as fd:
+    def load_from_disk(filepath=config.NN_SAVE_PATH):
+        with open(filepath, 'rb') as fd:
             return pickle.load(fd)
 
     def save_to_disk(self):
@@ -148,15 +148,15 @@ def apply_nn(data, label):
     net.save_to_disk()
 
 
-def test_nn(data, label):
-    if not os.path.isfile(config.NN_SAVE_PATH):
+def test_nn(data, label, filepath=config.NN_SAVE_PATH):
+    if not os.path.isfile(filepath):
         print('There is no saved pkl file for the nn')
         exit(-1)
 
     data = torch.tensor(data.values, dtype=torch.float32)
     label = torch.tensor(label.values)
 
-    net: NN = NN.load_from_disk()
+    net: NN = NN.load_from_disk(filepath)
 
     output_test = net(data).detach().apply_(lambda x: 0.5 * round(x / 0.5))
     print_nn_statistics(output_test, label)
@@ -172,7 +172,7 @@ def main():
                                               labels=labels, include_lowest=True)
 
     # apply_nn(data_frame, label[config.TARGET_COLUMN_NAME])
-    test_nn(data_frame, label[config.TARGET_COLUMN_NAME])
+    test_nn(data_frame, label[config.TARGET_COLUMN_NAME], filepath=os.path.join(config.PROJECT_ROOT, 'NN', 'net_v1.pkl'))
 
 
 if __name__ == "__main__":
