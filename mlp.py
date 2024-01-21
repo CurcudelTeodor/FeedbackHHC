@@ -13,7 +13,7 @@ def train_mlp(X_train, y_train, X_test, y_test):
     X_test_scaled = scaler.transform(X_test)
 
     # create a Multi-layer Perceptron Classifier
-    mlp_classifier = MLPClassifier(solver='lbfgs', hidden_layer_sizes=(5, 7, 6), max_iter=2000, random_state=42, alpha=0.1)
+    mlp_classifier = MLPClassifier(solver='lbfgs', hidden_layer_sizes=(5, 7, 6), max_iter=1000, random_state=42, alpha=0.1)
 
     # fit the model
     mlp_classifier.fit(X_train_scaled, y_train)
@@ -23,11 +23,11 @@ def train_mlp(X_train, y_train, X_test, y_test):
 
     # evaluate on training set
     accuracy_train_mlp = mlp_classifier.score(X_train_scaled, y_train)
-    print(f'Accuracy (MLP) on training set - : {accuracy_train_mlp:.5f}')
+    print(f'Accuracy (MLP) on training set - : {accuracy_train_mlp:.2f}')
 
     # evaluate on test set
     accuracy_mlp = accuracy_score(y_test, y_pred_mlp)
-    print(f'Accuracy (MLP) on test set - : {accuracy_mlp:.5f}')
+    print(f'Accuracy (MLP) on test set - : {accuracy_mlp:.2f}')
 
     print('Classification Report (MLP):')
     print(classification_report(y_test, y_pred_mlp))

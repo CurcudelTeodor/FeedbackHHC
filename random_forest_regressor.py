@@ -22,6 +22,7 @@ def plot_regression_results(y_true, y_pred, title='Regression Results'):
     plt.title(title)
     plt.show()
 
+
 def apply_bucketing(y_pred, bin_width=1.0):
     # apply bucketing by rounding the predicted values to the nearest bin
     return np.round(y_pred / bin_width) * bin_width
