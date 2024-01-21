@@ -32,10 +32,10 @@ def train_svm(X_train, y_train, X_test, y_test):
     y_pred_svc = svc.predict(X_test_scaled)
 
     # evaluate the model
-    print(f'Train Accuracy - : {svc.score(X_train_scaled, y_train):.5f}')
+    print(f'Train Accuracy - : {svc.score(X_train_scaled, y_train):.2f}')
 
     accuracy_svc = accuracy_score(y_test, y_pred_svc)
-    print(f'Test Accuracy (SVC) - : {accuracy_svc:.5f}')
+    print(f'Test Accuracy (SVC) - : {accuracy_svc:.2f}')
 
     # Display classification report
     print('Classification Report (SVC):')

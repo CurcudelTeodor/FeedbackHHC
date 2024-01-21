@@ -27,8 +27,8 @@ def train_random_forest(X_train, y_train, X_test, y_test):
     accuracy = accuracy_score(y_test, y_pred)
     # print(f'Accuracy: {accuracy:.5f}')
 
-    print(f'Train Accuracy - : {random_forest.score(X_train, y_train):.5f}')
-    print(f'Test Accuracy - : {random_forest.score(X_test, y_test):.5f}')
+    print(f'Train Accuracy - : {random_forest.score(X_train, y_train):.2f}')
+    print(f'Test Accuracy - : {random_forest.score(X_test, y_test):.2f}')
 
     print('Classification Report:')
     print(classification_report(y_test, y_pred))
