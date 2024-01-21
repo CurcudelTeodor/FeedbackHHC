@@ -11,7 +11,7 @@ def precision(output, target, limit):
     Computes precision for values in a specific interval
     :param output: Output made by the model
     :param target: The targeted labels
-    :param limit1: Index
+    :param limit: Index
     :return:
     """
     tp = 0

@@ -1,0 +1,152 @@
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding-bottom: 1rem; 
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start; 
+  height: 100vh;
+  text-align: center; 
+}
+
+.selector {
+  margin-top: 20px; 
+  width: 100%; 
+  max-width: 300px; 
+}
+
+.chart-container {
+  flex-grow: 1; 
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+}
+
+.search-container{
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-inner{
+  display: flex;
+  gap:10px;
+}
+.search-btn{
+  width: 250px;
+}
+.dropdown{
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid gray;
+}
+.dropdown:empty{
+  border: none;
+}
+.dropdown-row{
+  cursor: pointer;
+  text-align: start;
+  margin: 2px 0;
+}
+input{
+  width: 220px;
+}
+.search-inner{
+  display: flex;
+}
+
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 1200px; 
+  margin: auto; 
+}
+
+.top-information {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: flex-start; 
+  margin-bottom: 20px;
+}
+
+.agency-name {
+  flex-grow: 1; 
+  margin-right: 20px; 
+}
+
+.agency-name h2 {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0;
+  margin-bottom: 5px; 
+}
+
+.agency-name h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.information {
+  font-size: 18px;
+  text-align: left; 
+}
+
+.information p {
+  margin: 4px 0;
+}
+
+.information p.bold {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+
+  margin-top: 20px; 
+}
+.services{
+  margin-top: 100px;
+  display: flex;
+  gap:100px;
+}
+.services ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 10px;
+  text-align: justify;
+}
+.list-item{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+
+}
+.services-item{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+

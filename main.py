@@ -1,3 +1,4 @@
+import config
 from preprocess import handle_missing_values, transform_data_types, pca_transform
 import pandas as pd
 from exploitation_analysis import histogram
@@ -32,13 +33,12 @@ def undersample_class(data, target_class, num_instances_to_remove):
 
 
 def main():
-    file_path = r"data/HH_Provider_Oct2023.csv"
-    data_frame = pd.read_csv(file_path)
+    data_frame = pd.read_csv(config.INITIAL_DATA_PATH)
     clean_data_frame = handle_missing_values(data_frame)
 
     clean_data_frame = clean_data_frame.reset_index(drop=True)
 
-    clean_data_frame.to_csv(r'data/transformed.csv', index=False)
+    clean_data_frame.to_csv(config.TRANSFORMED_DATA_PATH, index=False)
 
     transformed_data_frame = transform_data_types(clean_data_frame)
     label = transformed_data_frame[['Quality of patient care star rating']]
@@ -50,18 +50,18 @@ def main():
 
     #augmented_data = undersample_class(augmented_data, target_class=3,num_samples=400)
 
-    augmented_data.to_csv(r"data/clean_data.csv", index=False)
+    augmented_data.to_csv(config.CLEAN_DATA_PATH, index=False)
     augmented_data = undersample_class(augmented_data, target_class=3, num_instances_to_remove=900)
     # augmented_data = augmented_data[augmented_data['Quality of patient care star rating'] != 3] uncomment this if we
     # don't want to remove the 900 instances with target = 3
-    augmented_data.to_csv(r"data/clean_data.csv", index=False)
+    augmented_data.to_csv(config.CLEAN_DATA_PATH, index=False)
 
     # remove target
-    augmented_data = augmented_data.drop(columns='Quality of patient care star rating')
+    augmented_data = augmented_data.drop(columns=config.TARGET_COLUMN_NAME)
 
     # Histogram(augmented_data)
     pca_data_frame = pca_transform(augmented_data)
-    pca_data_frame.to_csv(r'data/pca.csv', index=False)
+    pca_data_frame.to_csv(config.PCA_PATH, index=False)
 
 
 if __name__ == "__main__":
