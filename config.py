@@ -50,7 +50,19 @@ QUANTIFIABLE_COLUMNS = {
     "PPH Risk-Standardized Rate (Lower Limit)",
     "PPH Risk-Standardized Rate (Upper Limit)",
     "How much Medicare spends on an episode of care at this agency, compared to Medicare spending across all agencies nationally",
-    "No. of episodes to calc how much Medicare spends per episode of care at agency, compared to spending at all agencies (national)"
+    "No. of episodes to calc how much Medicare spends per episode of care at agency, compared to spending at all agencies (national)",
+    'HHCAHPS Survey Summary Star Rating',
+    'HHCAHPS Survey Summary Star Rating Footnote',
+    'Star Rating for health team gave care in a professional way',
+    'Percent of patients who reported that their home health team gave care in a professional way',
+    'Star Rating for health team communicated well with them',
+    'Percent of patients who reported that their home health team communicated well with them',
+    'Star Rating team discussed medicines, pain, and home safety',
+    'Percent of patients who reported that their home health team discussed medicines, pain, and home safety with them',
+    'Star Rating for how patients rated overall care from agency',
+    'Percent of patients who gave their home health agency a rating of 9 or 10 on a scale from 0 (lowest) to 10 (highest)',
+    'Percent of patients who reported YES, they would definitely recommend the home health agency to friends and family',
+    'Number of completed Surveys', 'Survey response rate'
 }
 
 RANDOM_STATE = 42

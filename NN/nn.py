@@ -32,6 +32,7 @@ class NN(nn.Module):
         torch.nn.init.kaiming_uniform_(self.input_to_hidden.weight)
 
         self.inter_layer = nn.Linear(self.hidden_layer_size_1, self.hidden_layer_size_2)
+        torch.nn.init.kaiming_uniform_(self.inter_layer.weight)
 
         self.hidden_to_output = nn.Linear(self.hidden_layer_size_2, self.output_layer_size)
         torch.nn.init.xavier_uniform_(self.hidden_to_output.weight)
@@ -137,10 +138,10 @@ def apply_nn(data, label):
     net.train_nn(x_train, y_train, EPOCHS, BATCH_SIZE)
 
     print("Train data")
-    output_training = net(x_train).detach().apply_(lambda x: 0.5 * round(x / 0.5))
+    output_training = net(x_train).detach()
     print_nn_statistics(output_training, y_train)
     print("Test data")
-    output_test = net(x_test).detach().apply_(lambda x: 0.5 * round(x / 0.5))
+    output_test = net(x_test).detach()
     print_nn_statistics(output_test, y_test)
     roc_nn(output_test, y_test)
 
