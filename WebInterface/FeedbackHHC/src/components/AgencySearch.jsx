@@ -3,13 +3,14 @@ import { ToastContainer, toast } from "react-toastify";
 import { FaCheck,FaRegWindowClose  } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import StarRating from "./StarRating";
+import { SERVER } from "../config";
+
 const AgencySearch = () => {
   const [agencyName, setAgencyName] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [agencies, setAgencies] = useState([]);
   const [agencyData, setAgencyData] = useState(null);
   
-
   const handleNameChange = (event) => {
     setAgencyName(event.target.value);
   };
@@ -20,7 +21,7 @@ const AgencySearch = () => {
     setAgencyName(agency);
   };
   const fetchAgencies = () => {
-    fetch("http://127.0.0.1:5000/agencies")
+    fetch(`${SERVER}/agencies`)
       .then((res) => res.json())
       .then((data) => {
         setAgencies(data.agencies);
@@ -35,7 +36,7 @@ const AgencySearch = () => {
       toast.error("Please enter a valid agency name and zip code");
       return;
     }
-    fetch(`http://127.0.0.1:5000/agency/${searchTerm}/${zipCode}`)
+    fetch(`${SERVER}/agency/${searchTerm}/${zipCode}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {

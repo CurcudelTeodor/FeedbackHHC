@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 
 import config
-from NN.nn import test_nn, apply_nn, NN, print_nn_statistics
+from nn_base.nn import NN, apply_nn, print_nn_statistics
 from preprocess import fill_column, pca_transform
 from sklearn.utils import shuffle
 
@@ -47,15 +47,15 @@ def merge_data():
     return merged
 
 
-def test_nn(data, label):
-    if not os.path.isfile(config.NN_SAVE_PATH):
-        print('There is no saved pkl file for the nn')
+def test_nn(data, label, filepath=config.NN_SAVE_PATH):
+    if not os.path.isfile(filepath):
+        print('There is no saved model for the nn')
         exit(-1)
 
     data = torch.tensor(data.values, dtype=torch.float32)
     label = torch.tensor(label.values)
 
-    net: NN = NN.load_from_disk()
+    net = NN().load_from_disk(filepath)
 
     output_test = net(data).detach().apply_(lambda x: 0.5 * round(x / 0.5))
     print_nn_statistics(output_test, label)

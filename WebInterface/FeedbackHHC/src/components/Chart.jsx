@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BarChart } from "./BarChart";
 import Select from "react-select";
+import { SERVER } from "../config";
 
 const Chart = () => {
   const [dataForChart, setDataForChart] = useState();
@@ -14,7 +15,7 @@ const Chart = () => {
     setDataForChart(dataForChart);
   };
   const fetchColumns = () => {
-    fetch("http://127.0.0.1:5000")
+    fetch(SERVER)
       .then((res) => res.json())
       .then((d) => {
         for (let i = 0; i < d.columns.length; i++) {
@@ -25,7 +26,7 @@ const Chart = () => {
   };
 
   const fetchData = () => {
-    fetch("http://127.0.0.1:5000/histograms")
+    fetch(`${SERVER}/histograms`)
       .then((res) => res.json())
       .then((data) => {
         setHistogramData(data);

@@ -1,4 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+import WebInterface.handlers as handlers
+
+import config
 from preprocess import handle_missing_values, transform_data_types, pca_transform
 import pandas as pd
 import numpy as np
@@ -6,17 +9,16 @@ import numpy as np
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"*": {"origins": "*"}})
 
-file_path = r"..\data\HH_Provider_Oct2023.csv"
-data_frame = pd.read_csv(file_path)
+data_frame = pd.read_csv(config.INITIAL_DATA_PATH)
 clean_data_frame = handle_missing_values(data_frame)
 clean_data_frame = clean_data_frame.reset_index(drop=True)
 
 transformed_data_frame = transform_data_types(clean_data_frame)
 
 # remove target
-transformed_data_frame = transformed_data_frame.drop(columns='Quality of patient care star rating')
+transformed_data_frame = transformed_data_frame.drop(columns=config.TARGET_COLUMN_NAME)
 exclude_columns = ['State', 'CMS Certification Number (CCN)', 'Provider Name', 'Address', 'City/Town', 'ZIP Code',
                    'Telephone Number']
 numeric_columns = transformed_data_frame.select_dtypes(include=['float64', 'int64', 'float32', 'int32']).columns
@@ -72,6 +74,20 @@ def agency(provider_name, zip_code):
         return jsonify(agency_dict), 200
     else:
         return jsonify({"error": "No data found for the given provider name and ZIP code"}), 404
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+
+    if not isinstance(data, dict) or 'instance' not in data:
+        return {'error': 'invalid body provided'}, 400
+
+    instance = data['instance']
+    try:
+        return {'info': handlers.handle_predict(instance)}
+    except Exception as exc:
+        return {'error': str(exc)}, 400
 
 
 if __name__ == '__main__':

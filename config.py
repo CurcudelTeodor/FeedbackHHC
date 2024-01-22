@@ -7,7 +7,8 @@ PCA_PATH = os.path.join(DATA_DIR, 'pca.csv')
 CLEAN_DATA_PATH = os.path.join(DATA_DIR, 'clean_data.csv')
 TRANSFORMED_DATA_PATH = os.path.join(DATA_DIR, 'transformed.csv')
 TARGET_COLUMN_NAME = 'Quality of patient care star rating'
-NN_SAVE_PATH = os.path.join(PROJECT_ROOT, 'NN', 'net.pkl')
+NN_SAVE_PATH = os.path.join(PROJECT_ROOT, 'nn_base', 'net.model')
+NN_SAVE_PATH_V1 = os.path.join(PROJECT_ROOT, 'nn_base', 'net_v1.model')
 
 QUANTIFIABLE_COLUMNS = {
     "Offers Nursing Care Services",

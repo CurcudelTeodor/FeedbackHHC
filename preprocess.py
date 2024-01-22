@@ -140,3 +140,10 @@ def pca_transform(data: pd.DataFrame, target_variance=0.90):
     print(f'PCA data shape: {format(data.shape)}')
 
     return data
+
+
+def pca_transform_count(data: pd.DataFrame, count):
+    pca = PCA(n_components=count)
+    data = pd.DataFrame(pca.fit_transform(data))
+
+    return data

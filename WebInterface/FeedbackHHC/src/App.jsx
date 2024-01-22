@@ -1,21 +1,24 @@
-import Chart from "./components/Chart";
 import "./App.css";
 import { useState } from "react";
+import Chart from "./components/Chart";
 import AgencySearch from "./components/AgencySearch";
+import Predict from "./components/Predict";
 function App() {
-  const [selectedButton, setSelectedButton] = useState("1");
+  // TODO: flip
+  // const [component, setComponent] = useState(<Chart />);
+  const [component, setComponent] = useState(<Predict />);
+
   return (
     <>
       <div className="buttons">
-        <button onClick={() => setSelectedButton("1")}>Charts</button>
-        <button onClick={() => setSelectedButton("2")}>Agencies</button>
+        <button onClick={() => setComponent(<Chart />)}>Charts</button>
+        <button onClick={() => setComponent(<AgencySearch />)}>Agencies</button>
+        <button onClick={() => setComponent(<Predict />)}>Predict</button>
       </div>
-      {selectedButton === "1" && <Chart />}
-      {selectedButton === "2" && (
-        <div className="container">
-          <AgencySearch />
-        </div>
-      )}
+
+      <div className="container">
+        {component}
+      </div>
     </>
   );
 }
