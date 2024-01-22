@@ -15,7 +15,7 @@ def train_svm(X_train, y_train, X_test, y_test):
     X_test_scaled = scaler.transform(X_test)
 
     # Set custom weights for specific classes (e.g., class 1 and class 3)
-    custom_weights = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1}
+    custom_weights = {1: 1.0, 2: 1.5, 3: 1.0, 4: 1.0, 5: 1.0}
 
     # Calculate class weights
     class_weights = {cls: custom_weights.get(cls, 1.0 / count) for cls, count in
@@ -32,10 +32,10 @@ def train_svm(X_train, y_train, X_test, y_test):
     y_pred_svc = svc.predict(X_test_scaled)
 
     # evaluate the model
-    print(f'Train Accuracy - : {svc.score(X_train_scaled, y_train):.2f}')
+    print(f'Train Accuracy - : {svc.score(X_train_scaled, y_train):.5f}')
 
     accuracy_svc = accuracy_score(y_test, y_pred_svc)
-    print(f'Test Accuracy (SVC) - : {accuracy_svc:.2f}')
+    print(f'Test Accuracy (SVC) - : {accuracy_svc:.5f}')
 
     # Display classification report
     print('Classification Report (SVC):')

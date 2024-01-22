@@ -15,8 +15,10 @@ def train_random_forest(X_train, y_train, X_test, y_test):
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
+    class_weights = {1: 1.0, 2: 3.0, 3: 1.0, 4: 1.0, 5: 1.0}
+
     # create a Random Forest
-    random_forest = RandomForestClassifier(random_state=42, n_estimators=70, bootstrap=True)
+    random_forest = RandomForestClassifier(random_state=42, n_estimators=70, bootstrap=True, class_weight=class_weights)
     # fit (train) the model on the training data
     random_forest.fit(X_train, y_train)
 
@@ -27,8 +29,8 @@ def train_random_forest(X_train, y_train, X_test, y_test):
     accuracy = accuracy_score(y_test, y_pred)
     # print(f'Accuracy: {accuracy:.5f}')
 
-    print(f'Train Accuracy - : {random_forest.score(X_train, y_train):.2f}')
-    print(f'Test Accuracy - : {random_forest.score(X_test, y_test):.2f}')
+    print(f'Train Accuracy - : {random_forest.score(X_train, y_train):.5f}')
+    print(f'Test Accuracy - : {random_forest.score(X_test, y_test):.5f}')
 
     print('Classification Report:')
     print(classification_report(y_test, y_pred))

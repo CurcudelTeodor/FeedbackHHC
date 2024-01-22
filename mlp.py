@@ -23,11 +23,11 @@ def train_mlp(X_train, y_train, X_test, y_test):
 
     # evaluate on training set
     accuracy_train_mlp = mlp_classifier.score(X_train_scaled, y_train)
-    print(f'Accuracy (MLP) on training set - : {accuracy_train_mlp:.2f}')
+    print(f'Accuracy (MLP) on training set - : {accuracy_train_mlp:.5f}')
 
     # evaluate on test set
     accuracy_mlp = accuracy_score(y_test, y_pred_mlp)
-    print(f'Accuracy (MLP) on test set - : {accuracy_mlp:.2f}')
+    print(f'Accuracy (MLP) on test set - : {accuracy_mlp:.5f}')
 
     print('Classification Report (MLP):')
     print(classification_report(y_test, y_pred_mlp))
