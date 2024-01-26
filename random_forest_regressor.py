@@ -4,6 +4,9 @@ from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, roc_curve, auc
+from sklearn.preprocessing import StandardScaler
+
+from utils.predict_with_classifier import predict_with_classifier
 
 
 def plot_regression_results(y_true, y_pred, title='Regression Results'):
@@ -28,6 +31,11 @@ def apply_bucketing(y_pred, bin_width=1.0):
     return np.round(y_pred / bin_width) * bin_width
 
 
+def handle_predict_rf_regressor(instance, random_forest_model, scaler):
+    prediction = predict_with_classifier(random_forest_model, scaler, instance)
+    return {'random_forest_regressor_prediction': prediction}
+
+
 def main():
     df = pd.read_csv('data/clean_data.csv')
     data_pca = pd.read_csv('data/pca.csv')
@@ -39,13 +47,13 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
     # create a Random Forest Regressor
-    random_forest = RandomForestRegressor(n_estimators=100, random_state=42)
+    random_forest_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
     # fit (train) the model on the training data
-    random_forest.fit(X_train, y_train)
+    random_forest_regressor.fit(X_train, y_train)
 
     # make predictions on the testing data
-    y_pred = random_forest.predict(X_test)
+    y_pred = random_forest_regressor.predict(X_test)
 
     # Apply bucketing to predicted values
     y_pred_bucketed = apply_bucketing(y_pred, bin_width=1.0)
@@ -57,6 +65,17 @@ def main():
     # plot regression results
     plot_regression_results(y_test, y_pred, title='Random Forest Regressor Results')
     plot_regression_results(y_test, y_pred_bucketed, title='Random Forest Regressor Results (Bucketed)')
+
+    # New instance for prediction
+    new_instance = 'PA,398035,"BAYADA HOME HEALTH CARE, INC.",2 MERIDIAN BOULEVARD 2ND FLOOR,WYOMISSING,19610,6103753800,VOLUNTARY NON-PROFIT - OTHER,Yes,Yes,Yes,Yes,Yes,Yes,10/07/2005,4.0,-,98.8,-,78.3,-,90.7,-,89.8,-,89.1,-,83.4,-,87.4,-,13.6,-,8.8,-,0.3,-,98.5,-,1.4,-,99.1,-,915,"1,160",78.88,88.84,86.06,91.31,Better Than National Rate,-,23,711,3.23,3.56,2.66,4.55,Same As National Rate,-,68,597,11.39,9.11,7.31,11.31,Same As National Rate,-,1.06,-,"1,394"'
+
+    # Assuming you have a scaler used for standardization during training
+    random_forest_regressor_scaler = StandardScaler().fit(X_train)
+
+    # Use the trained model and scaler for prediction
+    prediction_result = handle_predict_rf_regressor(new_instance, random_forest_regressor,
+                                                    random_forest_regressor_scaler)
+    print(prediction_result)
 
 
 if __name__ == "__main__":

@@ -1,11 +1,10 @@
-from matplotlib import pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import StandardScaler
 
 from utils import get_train_and_test_data as setup
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report, mean_squared_error, roc_curve, auc
-from sklearn.preprocessing import StandardScaler, label_binarize
-
+from utils.predict_with_classifier import predict_with_classifier
 from utils.roc_curve import plot_roc_curve_multiclass
 
 
@@ -65,6 +64,11 @@ def grid_search_random_forest(X_train, y_train):
     return best_model
 
 
+def handle_predict_rf(instance, random_forest_model, scaler):
+    prediction = predict_with_classifier(random_forest_model, scaler, instance)
+    return {'random_forest_prediction': prediction}
+
+
 def main():
     # load and split the data
     X_train, X_test, y_train, y_test = setup.get_train_and_test_data(test_size=0.2, random_state=101)
@@ -83,6 +87,15 @@ def main():
     # y_pred_best = best_model.predict(X_test)
     # accuracy_best = accuracy_score(y_test, y_pred_best)
     # print(f'Improved Accuracy: {accuracy_best}')
+
+    # new instance
+    new_instance = 'AK,027001,PROVIDENCE HOME HEALTH ALASKA,"4001 DALE STREET, SUITE 101",ANCHORAGE,99508,9075630130,VOLUNTARY NON PROFIT - RELIGIOUS AFFILIATION,Yes,Yes,Yes,Yes,Yes,Yes,05/17/1982,4.5,-,96.7,-,42.2,-,86.7,-,92.3,-,94.6,-,100.0,-,99.6,-,15.1,-,12.0,-,0.0,-,87.7,-,1.7,-,99.6,-,609,715,85.17,91.71,88.92,94.22,Better Than National Rate,-,16,398,4.02,3.80,2.82,5.20,Same As National Rate,-,44,395,11.14,10.13,7.91,13.02,Same As National Rate,-,0.89,-,"1,057"'
+
+    random_forest_scaler = StandardScaler().fit(X_train)
+
+    # use the trained model and scaler for prediction
+    prediction_result = handle_predict_rf(new_instance, random_forest, random_forest_scaler)
+    print(prediction_result)
 
 
 if __name__ == "__main__":
