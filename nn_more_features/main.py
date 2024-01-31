@@ -55,7 +55,7 @@ def test_nn(data, label, filepath=config.NN_SAVE_PATH):
     data = torch.tensor(data.values, dtype=torch.float32)
     label = torch.tensor(label.values)
 
-    net = NN().load_from_disk(filepath)
+    net = NN(input_layer_size=data.shape[1]).load_from_disk(filepath)
 
     output_test = net(data).detach().apply_(lambda x: 0.5 * round(x / 0.5))
     print_nn_statistics(output_test, label)
@@ -73,14 +73,14 @@ if __name__ == "__main__":
     merged[config.TARGET_COLUMN_NAME] = pd.cut(merged[config.TARGET_COLUMN_NAME], bins=bins,
                                                labels=labels, include_lowest=True)
 
-    print(merged['Quality of patient care star rating'].value_counts())
+    # print(merged['Quality of patient care star rating'].value_counts())
 
     merged = augment_class(merged, target_class=0, num_samples=7000)
     merged = augment_class(merged, target_class=1, num_samples=7000)
     merged = augment_class(merged, target_class=3, num_samples=7000)
     merged = augment_class(merged, target_class=4, num_samples=7000)
 
-    print(merged['Quality of patient care star rating'].value_counts())
+    # print(merged['Quality of patient care star rating'].value_counts())
 
     merged.to_csv("../data/merged.csv", index=False)
 
@@ -89,5 +89,5 @@ if __name__ == "__main__":
 
     merged = pca_transform(merged)
 
-    # apply_nn(merged, label[config.TARGET_COLUMN_NAME])
-    test_nn(merged, label[config.TARGET_COLUMN_NAME])
+    # apply_nn(merged, label[config.TARGET_COLUMN_NAME], filepath="./net_mode_features.model")
+    test_nn(merged, label[config.TARGET_COLUMN_NAME], filepath="./net_mode_features.model")

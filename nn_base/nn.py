@@ -70,7 +70,7 @@ class NN(nn.Module):
 
         return res
 
-    def load_from_disk(self, filepath=config.NN_SAVE_PATH):
+    def load_from_disk(self, filepath):
         self.load_state_dict(torch.load(filepath))
         return self
 
