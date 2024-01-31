@@ -67,7 +67,7 @@ def main():
     plot_regression_results(y_test, y_pred_bucketed, title='Random Forest Regressor Results (Bucketed)')
 
     # New instance for prediction
-    new_instance = 'PA,398035,"BAYADA HOME HEALTH CARE, INC.",2 MERIDIAN BOULEVARD 2ND FLOOR,WYOMISSING,19610,6103753800,VOLUNTARY NON-PROFIT - OTHER,Yes,Yes,Yes,Yes,Yes,Yes,10/07/2005,4.0,-,98.8,-,78.3,-,90.7,-,89.8,-,89.1,-,83.4,-,87.4,-,13.6,-,8.8,-,0.3,-,98.5,-,1.4,-,99.1,-,915,"1,160",78.88,88.84,86.06,91.31,Better Than National Rate,-,23,711,3.23,3.56,2.66,4.55,Same As National Rate,-,68,597,11.39,9.11,7.31,11.31,Same As National Rate,-,1.06,-,"1,394"'
+    new_instance = 'AK,027001,PROVIDENCE HOME HEALTH ALASKA,"4001 DALE STREET, SUITE 101",ANCHORAGE,99508,9075630130,VOLUNTARY NON PROFIT - RELIGIOUS AFFILIATION,Yes,Yes,Yes,Yes,Yes,Yes,05/17/1982,4.5,-,96.7,-,42.2,-,86.7,-,92.3,-,94.6,-,100.0,-,99.6,-,15.1,-,12.0,-,0.0,-,87.7,-,1.7,-,99.6,-,609,715,85.17,91.71,88.92,94.22,Better Than National Rate,-,16,398,4.02,3.80,2.82,5.20,Same As National Rate,-,44,395,11.14,10.13,7.91,13.02,Same As National Rate,-,0.89,-,"1,057"'
 
     # Assuming you have a scaler used for standardization during training
     random_forest_regressor_scaler = StandardScaler().fit(X_train)
